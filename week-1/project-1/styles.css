@@ -1,0 +1,278 @@
+/* Login page */
+.login-page {
+  padding-top: 30px;
+}
+
+.login-card {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.login-form {
+  display: grid;
+  gap: 10px;
+}
+
+/* Index page */
+.site-container {
+  width: min(1100px, calc(100% - 24px));
+  margin: 0 auto;
+  padding: 24px 0 40px;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.site-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+}
+
+.brand-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary), #61a4ff);
+}
+
+.site-navigation {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.hero-section {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 20px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.hero-content {
+  padding: 8px 4px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+
+.user-details-card {
+  padding: 22px;
+}
+
+.content-card {
+  padding: 22px;
+}
+
+.section-header {
+  margin-bottom: 18px;
+}
+
+.course-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.course-card {
+  padding: 18px;
+}
+
+.course-card .btn {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.course-label {
+  display: inline-flex;
+  margin-bottom: 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #f3f6fb;
+  color: var(--primary-dark);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* Payment page */
+.payment-page {
+  padding-top: 30px;
+}
+
+.payment-course-list {
+  margin-top: 10px;
+}
+
+.payment-form-card {
+  margin-top: 20px;
+}
+
+.payment-form {
+  display: grid;
+  gap: 12px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* Media queries */
+@media (max-width: 900px) {
+  .hero-section,
+  .course-list {
+    grid-template-columns: 1fr;
+  }
+
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 520px) {
+  .site-container {
+    width: min(100% - 16px, 1100px);
+  }
+
+  .hero-section,
+  .content-card,
+  .user-details-card,
+  .login-card {
+    padding: 18px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Common styles */
+:root {
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --text: #162033;
+  --muted: #637089;
+  --primary: #2457ff;
+  --primary-dark: #1d46cc;
+  --border: #dbe3ee;
+  --shadow: 0 14px 34px rgba(18, 31, 53, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--text);
+  background: linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--primary-dark);
+}
+
+.course-card,
+.content-card,
+.user-details-card,
+.login-card,
+.card-surface {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 12px;
+  font-size: clamp(2rem, 4vw, 3.3rem);
+  line-height: 1;
+}
+
+.lead,
+.muted {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, var(--primary), #4f8bff);
+  color: #fff;
+}
+
+.btn.secondary {
+  background: #fff;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+label {
+  margin-top: 8px;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font: inherit;
+}
+
+.space-top {
+  margin-top: 8px;
+}

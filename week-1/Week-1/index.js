@@ -18,12 +18,12 @@ function showWeatherError(message) {
     }
 }
 
-function loadChennaiWeather() {
+async function loadChennaiWeather() {
     if (!weatherStatus || !weatherContent) {
         return Promise.resolve();
     }
 
-    return fetch(weatherApiUrl)
+    return await fetch(weatherApiUrl)
         .then(function (response) {
             if (!response.ok) {
                 throw new Error("Weather request failed: " + response.status);

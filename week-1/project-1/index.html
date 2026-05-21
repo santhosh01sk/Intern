@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Course Registration</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="site-container">
+      <header class="site-header">
+        <div class="site-brand">
+          <span class="brand-icon"></span>
+          <span>Course Registration</span>
+        </div>
+        <nav class="site-navigation">
+          <a href="#courses">Courses</a>
+          <a href="login.html">Login</a>
+        </nav>
+      </header>
+
+      <section class="hero-section card-surface">
+        <div class="hero-content">
+          <p class="eyebrow">Simple static page</p>
+          <h1>Minimal course registration layout.</h1>
+          <p class="lead">
+            Log in on the separate page, save your name and email in the browser, and see your details here.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#courses">View courses</a>
+            <a class="btn secondary" href="login.html">Open login page</a>
+          </div>
+        </div>
+
+        <aside class="user-details-card">
+          <p class="eyebrow">User details</p>
+          <h2 id="savedUserName">Guest</h2>
+          <p class="muted" id="savedUserEmail">No saved login yet.</p>
+          <p class="muted">Your name and email will appear here after login.</p>
+        </aside>
+      </section>
+
+      <section class="content-card" id="courses">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Courses</p>
+            <h2>Featured options</h2>
+          </div>
+        </div>
+
+        <div class="course-list">
+          <article class="course-card">
+            <span class="course-label">Beginner</span>
+            <h3>Web Development Basics</h3>
+            <p>HTML, CSS, and JavaScript fundamentals for new learners.</p>
+            <a class="btn primary course-register-button" href="payment.html" data-course-name="Web Development Basics" data-course-fee="$120" data-course-level="Beginner">Register</a>
+          </article>
+
+          <article class="course-card">
+            <span class="course-label">Intermediate</span>
+            <h3>Frontend Design Systems</h3>
+            <p>Clean layout, spacing, and reusable visual patterns.</p>
+            <a class="btn primary course-register-button" href="payment.html" data-course-name="Frontend Design Systems" data-course-fee="$150" data-course-level="Intermediate">Register</a>
+          </article>
+
+          <article class="course-card">
+            <span class="course-label">Beginner</span>
+            <h3>MySQL for Applications</h3>
+            <p>Simple database concepts for application projects.</p>
+            <a class="btn primary course-register-button" href="payment.html" data-course-name="MySQL for Applications" data-course-fee="$135" data-course-level="Beginner">Register</a>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

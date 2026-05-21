@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Payment | Course Registration</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="site-container payment-page">
+      <header class="site-header">
+        <div class="site-brand">
+          <span class="brand-icon"></span>
+          <span>Course Registration</span>
+        </div>
+        <nav class="site-navigation">
+          <a href="index.html">Home</a>
+          <a href="login.html">Login</a>
+        </nav>
+      </header>
+
+      <section class="hero-section card-surface">
+        <div class="hero-content">
+          <p class="eyebrow">Payment</p>
+          <h1>Registered course payment page.</h1>
+          <p class="lead">
+            Review your saved user details, choose the course you want to register for, and complete a simple static payment form.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#paymentForm">Go to payment</a>
+            <a class="btn secondary" href="index.html">Back to home</a>
+          </div>
+        </div>
+
+        <aside class="user-details-card">
+          <p class="eyebrow">User details</p>
+          <h2 id="savedUserName">Guest</h2>
+          <p class="muted" id="savedUserEmail">No saved login yet.</p>
+          <p class="muted">These details come from the login page.</p>
+        </aside>
+      </section>
+
+      <section class="content-card">
+        <div class="section-header">
+          <p class="eyebrow">Registered courses</p>
+          <h2>Select a course</h2>
+        </div>
+
+        <div class="course-list payment-course-list">
+          <article class="course-card">
+            <span class="course-label">Beginner</span>
+            <h3>Web Development Basics</h3>
+            <p>Course fee: $120</p>
+            <p class="muted">HTML, CSS, and JavaScript fundamentals.</p>
+            <a class="btn primary course-choice-button" href="#paymentForm" data-course-name="Web Development Basics" data-course-fee="$120">Choose course</a>
+          </article>
+
+          <article class="course-card">
+            <span class="course-label">Intermediate</span>
+            <h3>Frontend Design Systems</h3>
+            <p>Course fee: $150</p>
+            <p class="muted">Spacing, layout, and reusable design patterns.</p>
+            <a class="btn primary course-choice-button" href="#paymentForm" data-course-name="Frontend Design Systems" data-course-fee="$150">Choose course</a>
+          </article>
+
+          <article class="course-card">
+            <span class="course-label">Beginner</span>
+            <h3>MySQL for Applications</h3>
+            <p>Course fee: $135</p>
+            <p class="muted">Simple database concepts for application projects.</p>
+            <a class="btn primary course-choice-button" href="#paymentForm" data-course-name="MySQL for Applications" data-course-fee="$135">Choose course</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="content-card payment-form-card" id="paymentForm">
+        <p class="eyebrow">Payment details</p>
+        <h2>Complete your registration</h2>
+        <form class="payment-form">
+          <div class="form-row">
+            <div>
+              <label for="selectedCourseName">Course name</label>
+              <input id="selectedCourseName" type="text" value="Web Development Basics" readonly />
+            </div>
+            <div>
+              <label for="selectedCourseFee">Fee</label>
+              <input id="selectedCourseFee" type="text" value="$120" readonly />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label for="cardHolderName">Card holder name</label>
+              <input id="cardHolderName" type="text" placeholder="Name on card" />
+            </div>
+            <div>
+              <label for="cardNumber">Card number</label>
+              <input id="cardNumber" type="text" placeholder="1234 5678 9012 3456" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label for="expiryDate">Expiry date</label>
+              <input id="expiryDate" type="text" placeholder="MM/YY" />
+            </div>
+            <div>
+              <label for="securityCode">Security code</label>
+              <input id="securityCode" type="text" placeholder="CVV" />
+            </div>
+          </div>
+
+          <button type="button" class="btn primary space-top">Pay and Register</button>
+          <p class="muted">This page is static only. No payment processing is connected.</p>
+        </form>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
