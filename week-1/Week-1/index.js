@@ -1,4 +1,4 @@
-var weatherApiKey = "f6bef624b15d1fa1052b3689e3636987";
+var weatherApiKey = "";
 var weatherApiUrl = "https://api.openweathermap.org/data/2.5/weather?q=Chennai&appid=" + weatherApiKey + "&units=metric";
 
 var weatherStatus = document.getElementById("weather-status");
