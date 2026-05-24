@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Profile | Course Registration</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="site-container profile-page">
+      <header class="site-header">
+        <div class="site-brand">
+          <span class="brand-icon"></span>
+          <span>Course Registration</span>
+        </div>
+        <nav class="site-navigation">
+          <a href="index.html">Home</a>
+          <a href="profile.html" class="logged-in-only">Profile</a>
+          <a href="#" class="logged-in-only logout-link">Logout</a>
+          <a href="login.html" class="logged-out-only">Login</a>
+          <a href="signup.html" class="logged-out-only">Sign Up</a>
+        </nav>
+      </header>
+
+      <section class="profile-grid">
+        <!-- Sidebar profile details -->
+        <aside class="user-details-card">
+          <p class="eyebrow">User profile</p>
+          <h2 id="savedUserName">Guest</h2>
+          <p class="muted" id="savedUserEmail">No saved login yet.</p>
+          <p class="muted">You are logged in and viewing your student profile page.</p>
+          <button type="button" class="btn secondary space-top logout-btn" style="width: 100%;">Log Out</button>
+        </aside>
+
+        <!-- Main registered courses list -->
+        <section class="registered-courses-card card-surface">
+          <p class="eyebrow">Courses</p>
+          <h2>Your Registered Classes</h2>
+          <div id="registeredCoursesContainer" class="registered-courses-list">
+            <!-- Dynamically populated -->
+            <div class="no-courses">
+              <p>You have not registered for any courses yet.</p>
+              <a href="index.html#courses" class="btn primary space-top">Explore Courses</a>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

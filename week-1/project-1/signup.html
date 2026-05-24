@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign Up | Course Registration</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="site-container signup-page">
+      <header class="site-header">
+        <div class="site-brand">
+          <span class="brand-icon"></span>
+          <span>Course Registration</span>
+        </div>
+        <nav class="site-navigation">
+          <a href="index.html">Home</a>
+          <a href="login.html">Login</a>
+        </nav>
+      </header>
+
+      <section class="signup-card content-card">
+        <p class="eyebrow">Register</p>
+        <h1>Create an account</h1>
+
+        <form id="signupDetailsForm" class="signup-form">
+          <label for="signupFullName">Name</label>
+          <input id="signupFullName" name="name" type="text" placeholder="Your name" required />
+
+          <label for="signupEmailAddress">Email</label>
+          <input id="signupEmailAddress" name="email" type="email" placeholder="you@example.com" required />
+
+          <label for="signupPassword">Password</label>
+          <input id="signupPassword" name="password" type="password" placeholder="Password (min. 6 chars)" minlength="6" required />
+
+          <label for="signupConfirmPassword">Confirm Password</label>
+          <input id="signupConfirmPassword" name="confirmPassword" type="password" placeholder="Repeat password" required />
+
+          <button type="submit" class="btn primary space-top">Sign Up</button>
+          <p class="muted">Already have an account? <a href="login.html">Log in here</a>.</p>
+        </form>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
