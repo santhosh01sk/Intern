@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let users = JSON.parse(localStorage.getItem('cr_users') || '[]');
   if (users.length === 0) {
     users.push({
-      name: 'Jane Doe',
-      email: 'jane@example.com',
+      name: 'santhosh',
+      email: 'santhosh@gmail.com',
       password: 'password123'
     });
     localStorage.setItem('cr_users', JSON.stringify(users));
