@@ -1,0 +1,38 @@
++-------------------+
+|       USERS       |
++-------------------+
+| PK id             |
+| name              |
+| email (UNIQUE)    |
+| password          |
+| created_at        |
++-------------------+
+          |
+          | 1
+          |
+          |------< enrolls >------|
+                                   | M
+                          +-------------------+
+                          |    ENROLLMENTS    |
+                          +-------------------+
+                          | PK id             |
+                          | FK user_id        |
+                          | FK course_id      |
+                          | amount_paid       |
+                          | enrolled_at       |
+                          | payment_status    |
+                          +-------------------+
+                                   | M
+                                   |
+                                   |------ belongs to ------|
+                                                           | 1
+                                                +-------------------+
+                                                |      COURSES      |
+                                                +-------------------+
+                                                | PK id             |
+                                                | name (UNIQUE)     |
+                                                | fee               |
+                                                | level             |
+                                                | description       |
+                                                | created_at        |
+                                                +-------------------+
