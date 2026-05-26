@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Auth.css";
+import "./Auth.scss";
 
 function Signup() {
     const [username, setUsername] = useState("");
@@ -32,6 +32,9 @@ function Signup() {
                         name="password"
                     />
                     <button type="submit">Signup</button>
+                    <button type="login" onClick={() => window.location.href = "/Login"}>
+                        Login
+                    </button>
                 </form>
             </div>
         </div>
