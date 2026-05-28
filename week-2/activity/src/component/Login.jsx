@@ -4,39 +4,34 @@ import "./Auth.scss";
 
 function Login() {
     const navigate = useNavigate();
-    const [username, setUsername] = useState("NULL");
-    const [password, setPassword] = useState("NULL");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
     function handleSubmit(event) {
         event.preventDefault();
-
-        const username = event.target.username.value;
-        const password = event.target.password.value;
-        setUsername(username);
-        setPassword(password);
-        console.log("Username:", username);
-        console.log("Password:", password);
+        const uname = event.target.username.value;
+        const pwd = event.target.password.value;
+        setUsername(uname);
+        setPassword(pwd);
+        console.log("Username:", uname);
+        console.log("Password:", pwd);
+        navigate("/", { state: { isLoggedIn: true } });
     }
-        
+
+    function goSignup() {
+        navigate("/signup");
+    }
     return (
         <div className="auth-container">
             <div className="auth-card">
                 <h1>Login</h1>
                 <form className="auth-form" onSubmit={handleSubmit}>
                     <label htmlFor="username">Username:</label>
-                    <input
-                        type="text"
-                        id="username"
-                        name="username"
-                    />
+                    <input type="text" id="username" name="username" />
                     <label htmlFor="password">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                    />
+                    <input type="password" id="password" name="password" />
                     <button type="submit">Login</button>
                 </form>
-                <button className="auth-ghost" type="button" onClick={() => navigate('/signup')}>Signup</button>
+                <button className="auth-ghost" type="button" onClick={goSignup}>Signup</button>
             </div>
         </div>
     );
