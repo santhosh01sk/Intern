@@ -1,4 +1,3 @@
-import react from "react";
 import "./Navbar.scss";
 import { Link } from "react-router-dom";
 function Navbar() {

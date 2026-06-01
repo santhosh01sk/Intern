@@ -1,17 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./Auth.scss";
 
 function Login() {
     const navigate = useNavigate();
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
     function handleSubmit(event) {
         event.preventDefault();
         const uname = event.target.username.value;
         const pwd = event.target.password.value;
-        setUsername(uname);
-        setPassword(pwd);
         console.log("Username:", uname);
         console.log("Password:", pwd);
         navigate("/", { state: { isLoggedIn: true } });

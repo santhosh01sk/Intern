@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Home.scss";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const suggestedCities = ["London", "New York", "Tokyo", "Delhi", "Sydney", "Cape Town"];
 const weatherApiKey = process.env.REACT_APP_OPENWEATHER_API_KEY;
@@ -70,6 +71,8 @@ function dedupeCards(cards) {
 }
 
 function Home() {
+    const location = useLocation();
+    const navigate = useNavigate();
     const [searchCity, setSearchCity] = useState("London");
     const [weatherCards, setWeatherCards] = useState([]);
     const [featuredWeather, setFeaturedWeather] = useState(null);
@@ -78,6 +81,12 @@ function Home() {
     const [lastUpdated, setLastUpdated] = useState("");
 
     useEffect(() => {
+        // If user is not logged in (no location state), forward to login
+        if (!location.state?.isLoggedIn) {
+            navigate("/login");
+            return;
+        }
+
         let ignore = false;
 
         async function loadSuggestedCities() {
@@ -127,7 +136,7 @@ function Home() {
         return () => {
             ignore = true;
         };
-    }, []);
+    }, [location, navigate]);
 
     async function handleSearchSubmit(event) {
         event.preventDefault();
@@ -173,10 +182,11 @@ function Home() {
     }
 
     return (
-        <main className="home-page">
-            <section className="home-shell">
-                <section className="weather-panel">
-                    <div className="panel-header">
+            <main className="home-page">
+                <section className="home-shell">
+                    <section className="weather-panel">
+
+                        <div className="panel-header">
                         <div>
                             <p className="section-label">OpenWeather search</p>
                             <h1>Search weather by city</h1>
