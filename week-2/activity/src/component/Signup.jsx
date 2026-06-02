@@ -2,11 +2,15 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Auth.scss";
 
+const API_BASE_URL = "http://localhost:8080/api/auth";
+
 function Signup() {
     const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({});
+    const [serverError, setServerError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     function validateForm() {
         const nextErrors = {};
@@ -26,19 +30,43 @@ function Signup() {
         return nextErrors;
     }
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
 
         const nextErrors = validateForm();
         setErrors(nextErrors);
+        setServerError("");
 
         if (Object.keys(nextErrors).length > 0) {
             return;
         }
 
-        console.log("Username:", username);
-        console.log("Password:", password);
-        navigate("/login");
+        setIsSubmitting(true);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/signup`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username: username.trim(),
+                    password,
+                }),
+            });
+
+            const payload = await response.json();
+
+            if (!response.ok) {
+                throw new Error(payload.message || "Signup failed.");
+            }
+
+            navigate("/login");
+        } catch (error) {
+            setServerError(error.message);
+        } finally {
+            setIsSubmitting(false);
+        }
     }
 
     function goLogin() {
@@ -75,7 +103,10 @@ function Signup() {
                         minLength={6}
                     />
                     {errors.password && <p className="auth-error" id="password-error">{errors.password}</p>}
-                    <button type="submit">Signup</button>
+                    {serverError ? <p className="auth-error">{serverError}</p> : null}
+                    <button type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? "Signing up..." : "Signup"}
+                    </button>
                     <button type="button" className="auth-ghost" onClick={goLogin}>
                         Login
                     </button>
