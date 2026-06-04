@@ -5,7 +5,7 @@ import "./Auth.scss";
 
 const API_BASE_URL = "http://localhost:8080/api/auth";
 
-function Login() {
+function Login({ onLoginSuccess }) {
     const navigate = useNavigate();
     const [serverError, setServerError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,7 +38,12 @@ function Login() {
                 throw new Error(payload.message || "Login failed.");
             }
 
-            navigate("/", { state: { isLoggedIn: true } });
+            if (typeof onLoginSuccess === "function") {
+                onLoginSuccess(payload.token, payload.username || username);
+                return;
+            }
+
+            navigate("/");
         } catch (error) {
             setServerError(error.message);
         } finally {

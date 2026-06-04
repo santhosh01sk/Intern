@@ -17,7 +17,6 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
     public Map<String, String> signup(String username, String password) {
         String normalizedUsername = normalize(username);
         String normalizedPassword = normalize(password);
