@@ -1,6 +1,6 @@
 import './App.scss';
 import { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import Login from './component/Login.jsx';
 import Signup from './component/Signup.jsx';
 import Home from './component/Home.jsx';
@@ -16,6 +16,7 @@ import {
 
 function AppShell() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [authStatus, setAuthStatus] = useState('checking');
   const [currentUser, setCurrentUser] = useState('');
 
@@ -62,6 +63,64 @@ function AppShell() {
       active = false;
     };
   }, []);
+
+  // Validate token on route navigation
+  useEffect(() => {
+    if (authStatus === 'checking') {
+      return;
+    }
+
+    const token = getStoredAuthToken();
+    if (!token) {
+      if (authStatus === 'authenticated') {
+        setCurrentUser('');
+        setAuthStatus('unauthenticated');
+      }
+      return;
+    }
+
+    let active = true;
+
+    async function verifyTokenOnNavigation() {
+      try {
+        const payload = await validateAuthToken(token);
+        if (!active) return;
+
+        if (authStatus !== 'authenticated') {
+          const username = payload.username || getStoredUsername() || '';
+          setCurrentUser(username);
+          setAuthStatus('authenticated');
+        }
+      } catch (err) {
+        if (!active) return;
+        clearAuthSession();
+        setCurrentUser('');
+        setAuthStatus('unauthenticated');
+        navigate('/login', { replace: true });
+      }
+    }
+
+    verifyTokenOnNavigation();
+
+    return () => {
+      active = false;
+    };
+  }, [location.pathname, authStatus, navigate]);
+
+  // Listen to unauthorized API response events
+  useEffect(() => {
+    function handleUnauthorized() {
+      clearAuthSession();
+      setCurrentUser('');
+      setAuthStatus('unauthenticated');
+      navigate('/login', { replace: true });
+    }
+
+    window.addEventListener('auth-unauthorized', handleUnauthorized);
+    return () => {
+      window.removeEventListener('auth-unauthorized', handleUnauthorized);
+    };
+  }, [navigate]);
 
   async function handleLogout() {
     const token = getStoredAuthToken();

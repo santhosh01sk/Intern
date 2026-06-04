@@ -62,3 +62,24 @@ export async function logoutAuthToken(token) {
 
     return payload;
 }
+
+export async function authenticatedFetch(url, options = {}) {
+    const token = getStoredAuthToken();
+    const headers = {
+        ...options.headers,
+    };
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(url, {
+        ...options,
+        headers,
+    });
+
+    if (response.status === 401) {
+        window.dispatchEvent(new CustomEvent("auth-unauthorized"));
+    }
+
+    return response;
+}
