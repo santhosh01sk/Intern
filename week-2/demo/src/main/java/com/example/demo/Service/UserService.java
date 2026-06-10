@@ -11,29 +11,23 @@ import com.example.demo.Repository.UserRepository;
 
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
-
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
     public Map<String, String> signup(String username, String password) {
         String normalizedUsername = normalize(username);
         String normalizedPassword = normalize(password);
-
         if (userRepository.findByUsername(normalizedUsername).isPresent()) {
             throw new IllegalStateException("Username already exists.");
         }
-
         User user = new User(normalizedUsername, normalizedPassword);
         userRepository.save(user);
-
         return Map.of(
                 "message", "User registered successfully.",
                 "username", normalizedUsername
         );
     }
-
     public boolean login(String username, String password) {
         String normalizedUsername = normalize(username);
         String normalizedPassword = normalize(password);

@@ -44,14 +44,6 @@ public class JwtUtil {
         return claims.getSubject();
     }
 
-    public boolean validateToken(String token, String username) {
-        try {
-            String tokenUsername = getUsernameFromToken(token);
-            return tokenUsername != null && tokenUsername.equals(username);
-        } catch (Exception ex) {
-            return false;
-        }
-    }
 
     public long getExpirationEpochMs(String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
