@@ -15,24 +15,40 @@ import io.jsonwebtoken.security.Keys;
 public class JwtUtil {
 
     private final Key key;
-    private final long expirationMs;
+    private final long accessTokenExpirationMs;
+    private final long refreshTokenExpirationMs;
 
     public JwtUtil(@Value("${jwt.secret}") String secret,
-                   @Value("${jwt.expiration-ms}") long expirationMs) {
-        if (secret == null || secret.isBlank() || secret.equals("replace-this-with-a-secure-secret")) {
-            this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-        } else {
+                   @Value("${jwt.expiration-ms:900000}") long accessTokenExpirationMs) {
+       // if (secret == null || secret.isBlank() || secret.equals("replace-this-with-a-secure-secret")) {
+         //   this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+       // } else {
             this.key = Keys.hmacShaKeyFor(secret.getBytes());
-        }
-        this.expirationMs = expirationMs;
+     //   }
+        this.accessTokenExpirationMs = accessTokenExpirationMs;
+        this.refreshTokenExpirationMs = 604800000L; // 7 days
     }
 
-    public String generateToken(String username) {
+    public String generateAccessToken(String username) {
         Date now = new Date();
-        Date expiry = new Date(now.getTime() + expirationMs);
+        Date expiry = new Date(now.getTime() + accessTokenExpirationMs);
 
         return Jwts.builder()
                 .setSubject(username)
+                .claim("type", "access")
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(key)
+                .compact();
+    }
+
+    public String generateRefreshToken(String username) {
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + refreshTokenExpirationMs);
+
+        return Jwts.builder()
+                .setSubject(username)
+                .claim("type", "refresh")
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(key)
@@ -44,6 +60,15 @@ public class JwtUtil {
         return claims.getSubject();
     }
 
+    public boolean validateToken(String token, String expectedType) {
+        try {
+            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+            String type = claims.get("type", String.class);
+            return expectedType.equals(type);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     public long getExpirationEpochMs(String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();

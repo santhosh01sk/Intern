@@ -14,7 +14,7 @@ function Login({ onLoginSuccess }) {
         event.preventDefault();
 
         const formData = new FormData(event.currentTarget);
-        const username = String(formData.get("username") || "").trim();
+        const email = String(formData.get("email") || "").trim();
         const password = String(formData.get("password") || "");
 
         setServerError("");
@@ -27,19 +27,27 @@ function Login({ onLoginSuccess }) {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    username,
+                    email,
                     password,
                 }),
             });
 
-            const payload = await response.json();
+            let payload = {};
+            const text = await response.text();
+            if (text) {
+                try {
+                    payload = JSON.parse(text);
+                } catch (e) {
+                    // Response is not JSON
+                }
+            }
 
             if (!response.ok) {
-                throw new Error(payload.message || "Login failed.");
+                throw new Error(payload.message || text || "Login failed.");
             }
 
             if (typeof onLoginSuccess === "function") {
-                onLoginSuccess(payload.token, payload.username || username);
+                onLoginSuccess(payload.accessToken, payload.refreshToken, payload.username || email);
                 return;
             }
 
@@ -59,8 +67,8 @@ function Login({ onLoginSuccess }) {
             <div className="auth-card">
                 <h1>Login</h1>
                 <form className="auth-form" onSubmit={handleSubmit}>
-                    <label htmlFor="username">Username:</label>
-                    <input type="text" id="username" name="username" required />
+                    <label htmlFor="email">Email:</label>
+                    <input type="email" id="email" name="email" required />
                     <label htmlFor="password">Password:</label>
                     <input type="password" id="password" name="password" required />
                     {serverError ? <p className="auth-error">{serverError}</p> : null}

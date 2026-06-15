@@ -6,6 +6,7 @@ const API_BASE_URL = "http://localhost:8080/api/auth";
 
 function Signup() {
     const navigate = useNavigate();
+    const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({});
@@ -19,6 +20,12 @@ function Signup() {
             nextErrors.username = "Username is required.";
         } else if (username.trim().length < 3) {
             nextErrors.username = "Username must be at least 3 characters.";
+        }
+
+        if (!email.trim()) {
+            nextErrors.email = "Email is required.";
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+            nextErrors.email = "Email must be a valid email address.";
         }
 
         if (!password) {
@@ -52,13 +59,22 @@ function Signup() {
                 body: JSON.stringify({
                     username: username.trim(),
                     password,
+                    email: email.trim(),
                 }),
             });
 
-            const payload = await response.json();
+            let payload = {};
+            const text = await response.text();
+            if (text) {
+                try {
+                    payload = JSON.parse(text);
+                } catch (e) {
+                    // Response is not JSON
+                }
+            }
 
             if (!response.ok) {
-                throw new Error(payload.message || "Signup failed.");
+                throw new Error(payload.message || text || "Signup failed.");
             }
 
             navigate("/login");
@@ -90,6 +106,18 @@ function Signup() {
                         required
                     />
                     {errors.username && <p className="auth-error" id="username-error">{errors.username}</p>}
+                     <label htmlFor="email">Email:</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={email}
+                        onChange={(event) => setEmail(event.target.value)}
+                        aria-invalid={Boolean(errors.email)}
+                        aria-describedby={errors.email ? "email-error" : undefined}
+                        required
+                    />
+                    {errors.email && <p className="auth-error" id="email-error">{errors.email}</p>}
                     <label htmlFor="password">Password:</label>
                     <input
                         type="password"

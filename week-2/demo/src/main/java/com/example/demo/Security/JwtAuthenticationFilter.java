@@ -9,8 +9,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.example.demo.Repository.TokenBlacklistRepository;
-
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,11 +19,9 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final TokenBlacklistRepository tokenBlacklistRepository;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, TokenBlacklistRepository tokenBlacklistRepository) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-        this.tokenBlacklistRepository = tokenBlacklistRepository;
     }
 
     @Override
@@ -35,21 +31,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             try {
-                // check blacklist first
-                if (tokenBlacklistRepository.isBlacklisted(token)) {
-                    // treat as invalid
-                    throw new RuntimeException("Token blacklisted");
-                }
-
-                String username = jwtUtil.getUsernameFromToken(token);
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null, List.of());
-                    SecurityContextHolder.getContext().setAuthentication(auth);
+                if (jwtUtil.validateToken(token, "access")) {
+                    String username = jwtUtil.getUsernameFromToken(token);
+                    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null, List.of());
+                        SecurityContextHolder.getContext().setAuthentication(auth);
+                    }
                 }
             } catch (JwtException ex) {
                 // JWT parse/validation exception
-            } catch (RuntimeException ex) {
-                // other runtime exceptions (e.g., blacklisted token)
             }
         }
 

@@ -1,10 +1,12 @@
 package com.example.demo;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +45,7 @@ public class WeatherAlertSystemTest {
     @BeforeEach
     public void setUp() {
         String testUsername = "testuser_" + System.currentTimeMillis();
-        testUser = new User(testUsername, "password");
+        testUser = new User(testUsername, "password", "test@example.com" + System.currentTimeMillis());
         userRepository.save(testUser);
         
         // Reload user to get ID

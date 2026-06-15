@@ -139,8 +139,8 @@ function AppShell() {
     }
   }
 
-  function handleLoginSuccess(token, username) {
-    storeAuthSession(token, username);
+  function handleLoginSuccess(accessToken, refreshToken, username) {
+    storeAuthSession(accessToken, refreshToken, username);
     setCurrentUser(username || '');
     setAuthStatus('authenticated');
     navigate('/', { replace: true });
