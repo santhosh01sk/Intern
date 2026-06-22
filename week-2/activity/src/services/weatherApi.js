@@ -113,3 +113,9 @@ export async function clearAlerts(token) {
     });
     return handleResponse(response);
 }
+
+export async function fetchProfile(token) {
+    const response = await fetchWithAuth(`${API_BASE_URL}/profile`);
+    return handleResponse(response);
+}
+

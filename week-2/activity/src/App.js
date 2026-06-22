@@ -5,6 +5,7 @@ import Login from './component/Login.jsx';
 import Signup from './component/Signup.jsx';
 import Home from './component/Home.jsx';
 import Navbar from './component/Navbar.jsx';
+import Profile from './component/Profile.jsx';
 import {
   clearAuthSession,
   getStoredAuthToken,
@@ -156,11 +157,14 @@ function AppShell() {
 
   return (
     <>
-      <Navbar isAuthenticated={authStatus === 'authenticated'} onLogout={handleLogout} username={currentUser} />
+      {location.pathname === '/' && (
+        <Navbar isAuthenticated={authStatus === 'authenticated'} onLogout={handleLogout} username={currentUser} />
+      )}
       <div>
         <div className="App">
           <Routes>
             <Route path="/" element={authStatus === 'authenticated' ? <Home username={currentUser} /> : <Navigate to="/login" replace />} />
+            <Route path="/profile" element={authStatus === 'authenticated' ? <Profile /> : <Navigate to="/login" replace />} />
             <Route path="/login" element={authStatus === 'authenticated' ? <Navigate to="/" replace /> : <Login onLoginSuccess={handleLoginSuccess} />} />
             <Route path="/signup" element={authStatus === 'authenticated' ? <Navigate to="/" replace /> : <Signup />} />
             <Route path="*" element={<Navigate to={authStatus === 'authenticated' ? '/' : '/login'} replace />} />
