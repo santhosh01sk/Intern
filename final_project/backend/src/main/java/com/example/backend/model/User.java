@@ -34,4 +34,11 @@ public class User {
 
     @Column
     private String specialization;
+
+    @Column
+    private String otp;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean emailVerified = false;
 }

@@ -35,6 +35,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .firstName("Alice")
                     .lastName("Admin")
                     .role(Role.ADMIN)
+                    .emailVerified(true)
                     .build();
 
             User teacher = User.builder()
@@ -44,6 +45,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .lastName("Teacher")
                     .role(Role.TEACHER)
                     .specialization("Computer Science")
+                    .emailVerified(true)
                     .build();
 
             User student1 = User.builder()
@@ -52,6 +54,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .firstName("Charlie")
                     .lastName("Student")
                     .role(Role.STUDENT)
+                    .emailVerified(true)
                     .build();
 
             User student2 = User.builder()
@@ -60,6 +63,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .firstName("David")
                     .lastName("Learner")
                     .role(Role.STUDENT)
+                    .emailVerified(true)
                     .build();
 
             userRepository.saveAll(Arrays.asList(admin, teacher, student1, student2));

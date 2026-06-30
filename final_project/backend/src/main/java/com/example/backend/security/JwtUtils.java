@@ -37,12 +37,17 @@ public class JwtUtils {
     }
 
     public String generateJwtToken(UserDetailsImpl userPrincipal) {
-        return generateTokenFromUsername(userPrincipal.getUsername());
+        String role = userPrincipal.getAuthorities().iterator().next().getAuthority();
+        if (role.startsWith("ROLE_")) {
+            role = role.substring(5);
+        }
+        return generateTokenFromUsername(userPrincipal.getUsername(), role);
     }
 
-    public String generateTokenFromUsername(String username) {
+    public String generateTokenFromUsername(String username, String role) {
         return Jwts.builder()
                 .subject(username)
+                .claim("role", role)
                 .issuedAt(new Date())
                 .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(getSigningKey())

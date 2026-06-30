@@ -1,11 +1,13 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.*;
+import java.util.Optional;
 import com.example.backend.model.Role;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.security.JwtUtils;
 import com.example.backend.security.UserDetailsImpl;
+import com.example.backend.service.EmailService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -33,8 +35,25 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
+    @Autowired
+    EmailService emailService;
+
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+        Optional<User> userOpt = userRepository.findByEmail(loginRequest.getEmail());
+        if (userOpt.isPresent() && !userOpt.get().isEmailVerified()) {
+            User user = userOpt.get();
+            String newOtp = String.format("%06d", new java.util.Random().nextInt(1000000));
+            user.setOtp(newOtp);
+            userRepository.save(user);
+
+            emailService.sendOtpEmail(user.getEmail(), user.getFirstName(), newOtp);
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email is not verified. A new OTP has been sent to your email. Please verify your email first."));
+        }
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
@@ -60,32 +79,117 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest signUpRequest) {
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+        String email = signUpRequest.getEmail();
+        if (email == null || !email.matches("^[A-Za-z0-9._%+-]+@(gmail\\.com|outlook\\.com|yahoo\\.com|hotmail\\.com|icloud\\.com)$")) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+                    .body(new MessageResponse("Error: Email must be a valid domain (e.g. @gmail.com, @outlook.com, @yahoo.com, @hotmail.com, @icloud.com)"));
         }
 
-        Role role;
-        try {
-            role = Role.valueOf(signUpRequest.getRole().toUpperCase());
-        } catch (Exception e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Invalid role specified. Role must be STUDENT, TEACHER, or ADMIN."));
+        Optional<User> existingUserOpt = userRepository.findByEmail(email);
+        User user;
+        if (existingUserOpt.isPresent()) {
+            User existingUser = existingUserOpt.get();
+            if (existingUser.isEmailVerified()) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new MessageResponse("Error: Email is already in use!"));
+            }
+
+            // Unverified user is re-registering: overwrite details
+            user = existingUser;
+            user.setPassword(encoder.encode(signUpRequest.getPassword()));
+            user.setFirstName(signUpRequest.getFirstName());
+            user.setLastName(signUpRequest.getLastName());
+            try {
+                user.setRole(Role.valueOf(signUpRequest.getRole().toUpperCase()));
+            } catch (Exception e) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new MessageResponse("Error: Invalid role specified. Role must be STUDENT, TEACHER, or ADMIN."));
+            }
+        } else {
+            Role role;
+            try {
+                role = Role.valueOf(signUpRequest.getRole().toUpperCase());
+            } catch (Exception e) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new MessageResponse("Error: Invalid role specified. Role must be STUDENT, TEACHER, or ADMIN."));
+            }
+
+            user = User.builder()
+                    .email(email)
+                    .password(encoder.encode(signUpRequest.getPassword()))
+                    .firstName(signUpRequest.getFirstName())
+                    .lastName(signUpRequest.getLastName())
+                    .role(role)
+                    .build();
         }
 
-        User user = User.builder()
-                .email(signUpRequest.getEmail())
-                .password(encoder.encode(signUpRequest.getPassword()))
-                .firstName(signUpRequest.getFirstName())
-                .lastName(signUpRequest.getLastName())
-                .role(role)
-                .build();
-
+        // Generate 6-digit random OTP
+        String otp = String.format("%06d", new java.util.Random().nextInt(1000000));
+        user.setOtp(otp);
+        user.setEmailVerified(false);
         userRepository.save(user);
 
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        emailService.sendOtpEmail(user.getEmail(), user.getFirstName(), otp);
+
+        return ResponseEntity.ok(new MessageResponse("User registered successfully! An OTP has been sent to your email."));
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@RequestBody OtpVerificationRequest request) {
+        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
+        if (!userOpt.isPresent()) {
+            return ResponseEntity
+                    .status(404)
+                    .body(new MessageResponse("Error: User not found!"));
+        }
+
+        User user = userOpt.get();
+        if (user.isEmailVerified()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email is already verified!"));
+        }
+
+        if (user.getOtp() == null || !user.getOtp().equals(request.getOtp())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Invalid OTP code. Please check and try again."));
+        }
+
+        user.setEmailVerified(true);
+        user.setOtp(null);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new MessageResponse("Email verified successfully! You can now log in."));
+    }
+
+    @PostMapping("/resend-otp")
+    public ResponseEntity<?> resendOtp(@RequestBody ResendOtpRequest request) {
+        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
+        if (!userOpt.isPresent()) {
+            return ResponseEntity
+                    .status(404)
+                    .body(new MessageResponse("Error: User not found!"));
+        }
+
+        User user = userOpt.get();
+        if (user.isEmailVerified()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email is already verified!"));
+        }
+
+        String newOtp = String.format("%06d", new java.util.Random().nextInt(1000000));
+        user.setOtp(newOtp);
+        userRepository.save(user);
+
+        emailService.sendOtpEmail(user.getEmail(), user.getFirstName(), newOtp);
+
+        return ResponseEntity.ok(new MessageResponse("OTP verification code resent successfully!"));
     }
 
     @PostMapping("/refresh")
@@ -105,7 +209,7 @@ public class AuthController {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("User not found!"));
 
-            String newAccessToken = jwtUtils.generateTokenFromUsername(user.getEmail());
+            String newAccessToken = jwtUtils.generateTokenFromUsername(user.getEmail(), user.getRole().name());
             String newRefreshToken = jwtUtils.generateRefreshTokenFromUsername(user.getEmail());
             ResponseCookie refreshCookie = jwtUtils.generateRefreshCookie(newRefreshToken);
 
