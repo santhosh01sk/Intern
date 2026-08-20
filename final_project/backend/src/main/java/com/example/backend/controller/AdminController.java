@@ -134,6 +134,18 @@ public class AdminController {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Password is required!"));
         }
 
+        // Validate password complexity
+        String password = request.getPassword();
+        if (password.length() < 8 ||
+                !password.matches(".*[A-Z].*") ||
+                !password.matches(".*[a-z].*") ||
+                !password.matches(".*[0-9].*") ||
+                !password.matches(".*[^A-Za-z0-9].*")) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character."));
+        }
+
         // Validate email domain
         if (!email.matches("^[A-Za-z0-9._%+-]+@(gmail\\.com|outlook\\.com|yahoo\\.com|hotmail\\.com|icloud\\.com)$")) {
             return ResponseEntity
@@ -210,7 +222,17 @@ public class AdminController {
             teacher.setSpecialization(request.getSpecialization());
         }
         if (request.getPassword() != null && !request.getPassword().trim().isEmpty()) {
-            teacher.setPassword(passwordEncoder.encode(request.getPassword()));
+            String password = request.getPassword();
+            if (password.length() < 8 ||
+                    !password.matches(".*[A-Z].*") ||
+                    !password.matches(".*[a-z].*") ||
+                    !password.matches(".*[0-9].*") ||
+                    !password.matches(".*[^A-Za-z0-9].*")) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new MessageResponse("Error: Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character."));
+            }
+            teacher.setPassword(passwordEncoder.encode(password));
         }
 
         userRepository.save(teacher);

@@ -86,6 +86,18 @@ public class AuthController {
                     .body(new MessageResponse("Error: Email must be a valid domain (e.g. @gmail.com, @outlook.com, @yahoo.com, @hotmail.com, @icloud.com)"));
         }
 
+        // Validate password complexity
+        String password = signUpRequest.getPassword();
+        if (password == null || password.length() < 8 ||
+                !password.matches(".*[A-Z].*") ||
+                !password.matches(".*[a-z].*") ||
+                !password.matches(".*[0-9].*") ||
+                !password.matches(".*[^A-Za-z0-9].*")) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character."));
+        }
+
         Optional<User> existingUserOpt = userRepository.findByEmail(email);
         User user;
         if (existingUserOpt.isPresent()) {
@@ -161,7 +173,7 @@ public class AuthController {
         }
 
         user.setEmailVerified(true);
-        user.setOtp(null);
+        
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("Email verified successfully! You can now log in."));
